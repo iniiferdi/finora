@@ -9,14 +9,11 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class WaveChartView extends View {
-
     private Paint linePaint;
     private Paint pointPaint;
     private Paint pointStrokePaint;
+    private int selectedIndex = 3;
 
-    private int selectedIndex = 3; // Oktober (index ke-3 dari 6 bulan)
-
-    // Data posisi Y (0.0 – 1.0 dari tinggi)
     private float[] points = new float[]{
             0.65f, 0.30f, 0.80f, 0.55f, 0.70f, 0.35f
     };
@@ -65,7 +62,6 @@ public class WaveChartView extends View {
         Path path = new Path();
         path.moveTo(0, h * points[0]);
 
-        // Buat kurva halus model cubic Bézier
         for (int i = 0; i < points.length - 1; i++) {
             float x1 = step * i;
             float y1 = h * points[i];
@@ -84,7 +80,6 @@ public class WaveChartView extends View {
 
         canvas.drawPath(path, linePaint);
 
-        // --- Gambar titik bulan aktif ---
         float px = step * selectedIndex;
         float py = h * points[selectedIndex];
 
