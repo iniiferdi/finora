@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/txtDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Entry"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/txtSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Provide a short description for this transaction."
+        android:textColor="#6A6A6A"
+        android:textSize="14sp"
+        android:paddingBottom="20dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="#E9E9E9"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:boxStrokeColor="#00000000"
+
+        app:hintTextColor="@color/black"
+        android:paddingBottom="24dp"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputDetail"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textColorHint="#7A7A7A"
+            android:padding="16dp"
+            android:textCursorDrawable="@drawable/cursor_black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textColor="@android:color/black"
+            android:backgroundTint="@android:color/white"
+            app:cornerRadius="200dp"
+            app:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:layout_marginEnd="8dp" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text="Next"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#000000"
+            app:cornerRadius="200dp"
+            app:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:layout_marginStart="8dp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

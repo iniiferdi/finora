@@ -5,12 +5,28 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.Finora" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="android:navigationBarColor">@color/white</item>
+    <style name="Theme.Finora" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Status & Nav bar -->
+        <item name="android:statusBarColor">@color/finora_white</item>
+        <item name="android:navigationBarColor">@color/finora_white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Override all Material accent colors -->
+        <item name="colorPrimary">@color/finora_black</item>
+        <item name="colorOnPrimary">@color/finora_white</item>
+
+        <item name="colorSecondary">@color/finora_black</item>
+        <item name="colorOnSecondary">@color/finora_white</item>
+
+        <item name="colorPrimaryContainer">@color/finora_dark_grey</item>
+        <item name="colorOnPrimaryContainer">@color/finora_white</item>
+
+        <item name="colorSurface">@color/finora_white</item>
+        <item name="colorOnSurface">@color/finora_black</item>
     </style>
+
 
     <style name="Theme.Finora.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowFullscreen">true</item>

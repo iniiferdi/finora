@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="finora_black">#000000</color>
+    <color name="finora_white">#FFFFFF</color>
+    <color name="finora_grey">#EDEDED</color>
+    <color name="finora_dark_grey">#222222</color>
+
 </resources>
