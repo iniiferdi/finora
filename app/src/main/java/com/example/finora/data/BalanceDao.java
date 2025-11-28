@@ -11,9 +11,10 @@ public interface BalanceDao {
     @Query("SELECT balance FROM balance WHERE id = 1")
     Integer getBalance();
 
-    @Insert
-    void insert(BalanceEntity balanceEntity);
-
     @Query("UPDATE balance SET balance = :newBalance WHERE id = 1")
     void updateBalance(int newBalance);
+
+    @Insert
+    void insert(BalanceEntity balanceEntity);
 }
+

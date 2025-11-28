@@ -39,6 +39,16 @@
             android:textSize="13sp" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iconDelete"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_delete"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:visibility="gone" />
+
+
     <TextView
         android:id="@+id/tvAmount"
         android:layout_width="wrap_content"

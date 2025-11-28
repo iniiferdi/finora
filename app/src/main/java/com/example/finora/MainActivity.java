@@ -23,18 +23,21 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
     private TransactionAdapter adapter;
     private TransactionDao transactionDao;
+
     private String formatRupiah(int value) {
         return String.format(Locale.US, "%,d", value).replace(",", ".");
     }
+
     private void loadBalance() {
         BalanceDao balanceDao = AppDatabase.getInstance(this).balanceDao();
         Integer balance = balanceDao.getBalance();
+
         if (balance == null) balance = 0;
 
         TextView tvTotalAmount = findViewById(R.id.tvTotalAmount);
-
         tvTotalAmount.setText("Rp " + formatRupiah(balance));
     }
 
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Pastikan saldo ada satu row
         BalanceDao balanceDao = AppDatabase.getInstance(this).balanceDao();
         Integer balance = balanceDao.getBalance();
         if (balance == null) {
@@ -57,8 +61,36 @@ public class MainActivity extends AppCompatActivity {
         }
 
         transactionDao = AppDatabase.getInstance(this).transactionDao();
+
         RecyclerView rvToday = findViewById(R.id.rvTodayTransactions);
         adapter = new TransactionAdapter();
+
+        adapter.setOnDeleteClickListener(item -> {
+            AppDatabase db = AppDatabase.getInstance(this);
+
+            // Ambil transaksi lama berdasarkan ID
+            TransactionEntity old = db.transactionDao().getById(item.id);
+
+            if (old == null) return; // biar aman
+
+            BalanceDao bDao = db.balanceDao();
+            Integer currentBalance = bDao.getBalance();
+            if (currentBalance == null) currentBalance = 0;
+
+            // Update saldo
+            if (old.type.equalsIgnoreCase("IN")) {
+                currentBalance = currentBalance - old.amount;
+            } else {
+                currentBalance = currentBalance + old.amount;
+            }
+
+            bDao.updateBalance(currentBalance);
+            db.transactionDao().deleteById(item.id);
+
+            loadTodayTransactions();
+            loadBalance();
+        });
+
         rvToday.setAdapter(adapter);
         rvToday.setLayoutManager(new LinearLayoutManager(this));
 

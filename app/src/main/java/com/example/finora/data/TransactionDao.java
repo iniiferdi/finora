@@ -12,6 +12,14 @@ public interface TransactionDao {
     @Insert
     void insert(TransactionEntity transaction);
 
+    @Query("DELETE FROM transactions WHERE id = :id")
+    void deleteById(int id);
+
+    @Query("SELECT * FROM transactions WHERE id = :id LIMIT 1")
+    TransactionEntity getById(int id);
+
+
+
     @Query("SELECT * FROM transactions ORDER BY id DESC")
     List<TransactionEntity> getAll();
 
