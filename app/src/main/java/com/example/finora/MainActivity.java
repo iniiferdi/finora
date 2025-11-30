@@ -3,6 +3,7 @@ package com.example.finora;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,7 +53,69 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
+        View overlay = findViewById(R.id.searchOverlay);
+        View btnSearch = findViewById(R.id.btnSearch);
+        View btnClose = findViewById(R.id.btnCloseSearch);
+        EditText etSearch = findViewById(R.id.etSearch);
+        RecyclerView rvSearch = findViewById(R.id.rvSearchResults);
+
+        TransactionAdapter searchAdapter = new TransactionAdapter();
+        rvSearch.setLayoutManager(new LinearLayoutManager(this));
+        rvSearch.setAdapter(searchAdapter);
+
+// OPEN SEARCH OVERLAY
+        btnSearch.setOnClickListener(v -> {
+            overlay.setVisibility(View.VISIBLE);
+            overlay.setAlpha(0f);
+            overlay.setTranslationY(-80f);
+
+            overlay.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(180)
+                    .start();
+
+            etSearch.requestFocus();
+        });
+
+// CLOSE SEARCH
+        btnClose.setOnClickListener(v -> {
+            overlay.animate()
+                    .alpha(0f)
+                    .translationY(-80f)
+                    .setDuration(180)
+                    .withEndAction(() -> overlay.setVisibility(View.GONE))
+                    .start();
+        });
+
+        etSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().toLowerCase();
+
+                List<TransactionEntity> all = transactionDao.getAll();
+                List<TransactionEntity> filtered = new java.util.ArrayList<>();
+
+                for (TransactionEntity t : all) {
+                    if (t.title.toLowerCase().contains(query) ||
+                            t.type.toLowerCase().contains(query)) {
+                        filtered.add(t);
+                    }
+                }
+
+                searchAdapter.setData(filtered);
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
+
+
         BalanceDao balanceDao = AppDatabase.getInstance(this).balanceDao();
         Integer balance = balanceDao.getBalance();
         if (balance == null) {

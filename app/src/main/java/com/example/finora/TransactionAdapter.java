@@ -49,52 +49,53 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvCategory.setText(item.type);
         holder.tvAmount.setText("Rp " + formatRupiah(item.amount));
 
-        holder.normalLayout.setVisibility(View.VISIBLE);
-        holder.deleteLayout.setVisibility(View.GONE);
+        holder.iconDelete.setVisibility(View.GONE);
 
         holder.itemView.setOnLongClickListener(v -> {
-            holder.normalLayout.setVisibility(View.GONE);
-            holder.deleteLayout.setVisibility(View.VISIBLE);
+            if (holder.iconDelete.getVisibility() == View.GONE) {
+                holder.iconDelete.setVisibility(View.VISIBLE);
+                holder.iconDelete.setAlpha(0f);
+                holder.iconDelete.setTranslationX(80f);
+
+                holder.iconDelete.animate()
+                        .alpha(1f)
+                        .translationX(0f)
+                        .setDuration(180)
+                        .start();
+            }
             return true;
         });
 
         holder.iconDelete.setOnClickListener(v -> {
-            if (deleteListener != null) deleteListener.onDelete(item);
-        });
-
-        holder.deleteLayout.setOnClickListener(v -> {
-            holder.deleteLayout.setVisibility(View.GONE);
-            holder.normalLayout.setVisibility(View.VISIBLE);
+            if (deleteListener != null) {
+                deleteListener.onDelete(item);
+            }
         });
     }
-
 
     @Override
     public int getItemCount() {
         return list.size();
     }
 
+
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvCategory, tvAmount, tvDeleteText;
-        View normalLayout, deleteLayout;
+        TextView tvTitle, tvCategory, tvAmount;
         ImageView iconDelete;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            normalLayout = itemView.findViewById(R.id.normalLayout);
-            deleteLayout = itemView.findViewById(R.id.deleteLayout);
-
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvAmount = itemView.findViewById(R.id.tvAmount);
-
             iconDelete = itemView.findViewById(R.id.iconDelete);
-            tvDeleteText = itemView.findViewById(R.id.tvDeleteText);
         }
     }
 
-
+    // -----------------------------
+    // Format rupiah
+    // -----------------------------
     private String formatRupiah(int value) {
         return String.format(Locale.US, "%,d", value).replace(",", ".");
     }
