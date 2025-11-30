@@ -11,7 +11,7 @@ import com.example.finora.data.TransactionEntity;
 public class TransactionDetailActivity extends AppCompatActivity {
 
     TextView tvTitle, tvAmount, tvDate, tvType;
-    ImageView btnBack, btnDelete, iconType;
+    ImageView btnBack, iconType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
