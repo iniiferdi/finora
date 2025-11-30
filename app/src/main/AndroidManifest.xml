@@ -11,21 +11,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Finora">
-
+        <activity
+            android:name=".StatisticsActivity"
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/Theme.Finora.Splash"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Finora.Splash">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".AddTransactionActivity"/>
-        <activity android:name=".MainActivity"/>
-
+        <activity android:name=".AddTransactionActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

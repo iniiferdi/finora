@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Finora</string>
     <string name="finora_title">Finora</string>
+
+    <!-- Untuk Statistics Activity -->
+    <string name="dashboard_statistik">Dashboard Statistik</string>
+    <string name="pemasukan_bulan_ini">Pemasukan Bulan Ini</string>
+    <string name="pengeluaran_bulan_ini">Pengeluaran Bulan Ini</string>
+    <string name="tabungan_bulan_ini">Tabungan Bulan Ini</string>
+    <string name="total_saldo">Total Saldo</string>
+    <string name="rp_0">Rp 0</string>
 </resources>
