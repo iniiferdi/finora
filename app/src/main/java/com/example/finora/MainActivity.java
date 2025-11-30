@@ -97,10 +97,6 @@ public class MainActivity extends AppCompatActivity {
         loadTodayTransactions();
 
         findViewById(R.id.navAdd).setOnClickListener(v -> showAddModal());
-        findViewById(R.id.navStats).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void loadTodayTransactions() {
