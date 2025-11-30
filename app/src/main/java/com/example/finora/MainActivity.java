@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Pastikan saldo ada satu row
         BalanceDao balanceDao = AppDatabase.getInstance(this).balanceDao();
         Integer balance = balanceDao.getBalance();
         if (balance == null) {
@@ -68,16 +67,14 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnDeleteClickListener(item -> {
             AppDatabase db = AppDatabase.getInstance(this);
 
-            // Ambil transaksi lama berdasarkan ID
             TransactionEntity old = db.transactionDao().getById(item.id);
 
-            if (old == null) return; // biar aman
+            if (old == null) return;
 
             BalanceDao bDao = db.balanceDao();
             Integer currentBalance = bDao.getBalance();
             if (currentBalance == null) currentBalance = 0;
 
-            // Update saldo
             if (old.type.equalsIgnoreCase("IN")) {
                 currentBalance = currentBalance - old.amount;
             } else {
@@ -108,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
     private void showAddModal() {
         BottomSheetDialog dialog = new BottomSheetDialog(MainActivity.this);
         View view = getLayoutInflater().inflate(R.layout.modal_add, null);
-
         TextInputEditText inputDetail = view.findViewById(R.id.inputDetail);
 
         view.findViewById(R.id.btnCancel).setOnClickListener(v -> dialog.dismiss());
