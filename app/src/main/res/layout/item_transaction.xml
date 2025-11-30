@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemContainer"
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:padding="14dp"
     android:background="@drawable/bg_normal_item">
 
-    <!-- Normal Layout -->
+    <!-- Normal View -->
     <LinearLayout
         android:id="@+id/normalLayout"
         android:layout_width="match_parent"
@@ -35,7 +36,7 @@
                 android:text="Title"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="#1E1E1E"/>
+                android:textColor="#1E1E1E" />
 
             <TextView
                 android:id="@+id/tvCategory"
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="Category"
                 android:textSize="13sp"
-                android:textColor="#828282"/>
+                android:textColor="#828282" />
         </LinearLayout>
 
         <TextView
@@ -53,10 +54,10 @@
             android:text="Rp.0"
             android:textSize="15sp"
             android:textColor="#111111"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- DELETE MODE modern minimalist -->
+    <!-- DELETE OVERLAY -->
     <LinearLayout
         android:id="@+id/deleteLayout"
         android:layout_width="match_parent"
@@ -73,7 +74,7 @@
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:src="@drawable/ic_delete"
-            android:backgroundTint="@color/white" />
+            app:tint="#FFFFFF" />
 
         <TextView
             android:id="@+id/tvDeleteText"
