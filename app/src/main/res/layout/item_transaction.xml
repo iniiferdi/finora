@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/itemContainer"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:padding="12dp"
-    android:background="#FFFFFF">
+    android:layout_height="72dp"
+    android:padding="14dp"
+    android:background="@drawable/bg_normal_item">
 
     <!-- Normal Layout -->
     <LinearLayout
@@ -12,71 +12,75 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:visibility="visible">
+        android:gravity="center_vertical">
 
         <ImageView
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:src="@drawable/rounded_box_gray"/>
+            android:src="@drawable/rounded_box_gray"
+            android:background="@drawable/bg_icon"
+            android:padding="6dp" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
-            android:paddingStart="10dp">
+            android:paddingStart="12dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/tvTitle"
-                android:text="Title"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#000000"/>
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1E1E1E"/>
+
+            <TextView
                 android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Category"
                 android:textSize="13sp"
-                android:textColor="#9E9E9E"/>
+                android:textColor="#828282"/>
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tvAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvAmount"
             android:text="Rp.0"
-            android:textSize="16sp"
-            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textColor="#111111"
             android:textStyle="bold"/>
     </LinearLayout>
 
+    <!-- DELETE MODE modern minimalist -->
     <LinearLayout
         android:id="@+id/deleteLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        android:background="#D32F2F"
+        android:background="@drawable/bg_delete_mode"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="12dp"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/iconDelete"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_delete"/>
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:src="@drawable/ic_delete"
+            android:backgroundTint="@color/white" />
 
         <TextView
             android:id="@+id/tvDeleteText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Deleted"
-            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tap to Delete"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:layout_marginStart="10dp"/>
