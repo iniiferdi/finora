@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         loadBalance();
 
         findViewById(R.id.navAdd).setOnClickListener(v -> showAddModal());
+        findViewById(R.id.navHome).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     @Override
