@@ -100,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         List<TransactionEntity> data = transactionDao.getToday(today);
         adapter.setData(data);
+
+        if (data.isEmpty()) {
+            BalanceDao balanceDao = AppDatabase.getInstance(this).balanceDao();
+            balanceDao.updateBalance(0);
+            loadBalance();
+        }
     }
 
     private void showAddModal() {
