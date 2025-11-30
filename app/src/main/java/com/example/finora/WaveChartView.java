@@ -50,16 +50,38 @@ public class WaveChartView extends View {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
+    public void setPoints(float[] newPoints) {
+        this.points = newPoints;
+        this.selectedIndex = points.length - 1; // Select the last point by default
+        invalidate(); // Redraw
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (points == null || points.length == 0) return;
+
         float w = getWidth();
         float h = getHeight();
 
-        float step = w / (points.length - 1);
+        float step = w / (points.length > 1 ? points.length - 1 : 1);
 
         Path path = new Path();
+        path.moveTo(0, h * (1 - points[0])); // Invert Y so 1.0 is top, 0.0 is bottom? No, original code used h * points[i]. 
+        // If points[i] is 0.65, it is 65% down the screen.
+        // Let's stick to original logic: y = h * points[i]
+        // But usually charts have 0 at bottom. 
+        // The original points were 0.65, 0.30, etc.
+        // If the chart expects normalized values 0..1 where 1 is max value.
+        // If the logic is y = h * point, then larger point value = lower on screen.
+        // Usually for a chart, we want larger value = higher on screen (smaller y).
+        // So we should probably do y = h - (h * point) or similar if point is 0..1 normalized value.
+        // However, looking at original code: `path.moveTo(0, h * points[0]);`
+        // It draws strictly based on the float value.
+        // I will assume the input `points` will be normalized such that they fit the drawing logic.
+        // For now, let's just keep the drawing logic identical but allow updating points.
+        
         path.moveTo(0, h * points[0]);
 
         for (int i = 0; i < points.length - 1; i++) {
@@ -80,12 +102,14 @@ public class WaveChartView extends View {
 
         canvas.drawPath(path, linePaint);
 
-        float px = step * selectedIndex;
-        float py = h * points[selectedIndex];
+        if (selectedIndex >= 0 && selectedIndex < points.length) {
+            float px = step * selectedIndex;
+            float py = h * points[selectedIndex];
 
-        float radius = 22f;
+            float radius = 22f;
 
-        canvas.drawCircle(px, py, radius, pointPaint);
-        canvas.drawCircle(px, py, radius, pointStrokePaint);
+            canvas.drawCircle(px, py, radius, pointPaint);
+            canvas.drawCircle(px, py, radius, pointStrokePaint);
+        }
     }
 }

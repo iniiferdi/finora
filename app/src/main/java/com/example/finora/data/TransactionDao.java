@@ -18,18 +18,16 @@ public interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE id = :id LIMIT 1")
     TransactionEntity getById(int id);
 
-
-
     @Query("SELECT * FROM transactions ORDER BY id DESC")
     List<TransactionEntity> getAll();
 
     @Query("SELECT * FROM transactions WHERE date = :today ORDER BY id DESC")
     List<TransactionEntity> getToday(String today);
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'income'")
+    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'INCOME'")
     Double getTotalIncome();
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'expense'")
+    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'EXPENSE'")
     Double getTotalExpense();
 
     @Query("SELECT substr(date, 6, 2) AS month, SUM(amount) AS total " +
@@ -38,11 +36,9 @@ public interface TransactionDao {
             "GROUP BY month")
     List<MonthlyTotal> getMonthlyTotals(String type);
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'income' AND substr(date, 1, 7) = :monthYear")
+    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'INCOME' AND substr(date, 1, 7) = :monthYear")
     Double getMonthlyIncome(String monthYear);
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'expense' AND substr(date, 1, 7) = :monthYear")
+    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'EXPENSE' AND substr(date, 1, 7) = :monthYear")
     Double getMonthlyExpense(String monthYear);
-
 }
-
