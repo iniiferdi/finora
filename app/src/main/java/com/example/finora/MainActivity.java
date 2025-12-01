@@ -101,16 +101,6 @@ public class MainActivity extends AppCompatActivity {
         // Get both INCOME and EXPENSE aggregates
         List<MonthlyTotal> allTotals = transactionDao.getAllMonthlyTotals();
 
-        // Map: "YYYY-MM" -> { Income, Expense }
-        // Or better: calculate net movement.
-        // Strategy:
-        // 1. Calculate net = Income - Expense for each month.
-        // 2. Find absolute max value (either max positive income or max negative outcome) to scale the chart.
-        // 3. Center = 0.5f (middle).
-        //    Positive net -> goes up (0.5 -> 0.2).
-        //    Negative net -> goes down (0.5 -> 0.8).
-        //    Zero -> 0.5.
-
         Map<String, Double> incomeMap = new HashMap<>();
         Map<String, Double> expenseMap = new HashMap<>();
 
@@ -133,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat sdfKey = new SimpleDateFormat("yyyy-MM", Locale.US);
         String[] shortMonths = new DateFormatSymbols(Locale.US).getShortMonths();
 
-        // First pass: Calculate net values and find max absolute value
         double maxAbs = 0;
         double[] netValues = new double[numPoints];
 
@@ -151,22 +140,19 @@ public class MainActivity extends AppCompatActivity {
             tempCal.add(Calendar.MONTH, 1);
         }
 
-        // Avoid division by zero
         if (maxAbs == 0) maxAbs = 1;
 
-        // Second pass: normalize to 0..1 range
-        // Center = 0.5
-        // Max Positive = 0.2 (Top)
-        // Max Negative = 0.8 (Bottom)
-        // Range from center is +/- 0.3
+        // 0.5 is center
+        // Positive net -> Go UP (towards 0.0)
+        // Negative net -> Go DOWN (towards 1.0)
+        // Scale factor: 0.4 (leaves 0.1 margin top/bottom)
         
-        // Formula: y = 0.5 - (net / maxAbs) * 0.3
-        // If net = maxAbs (positive) -> 0.5 - 0.3 = 0.2 (High)
-        // If net = -maxAbs (negative) -> 0.5 - (-1)*0.3 = 0.8 (Low)
-        // If net = 0 -> 0.5 (Center)
-
         for (int i = 0; i < numPoints; i++) {
-            points[i] = (float) (0.5f - (netValues[i] / maxAbs * 0.3f));
+            // Formula: y = 0.5 - (net / maxAbs * scale)
+            // If net > 0 (income), y < 0.5 (up)
+            // If net < 0 (expense), y > 0.5 (down)
+            
+            points[i] = (float) (0.5f - (netValues[i] / maxAbs * 0.4f));
             
             // Fill labels
             int monthIndex = calendar.get(Calendar.MONTH);
