@@ -30,17 +30,10 @@ public interface TransactionDao {
     @Query("SELECT SUM(amount) FROM transactions WHERE type = 'EXPENSE'")
     Double getTotalExpense();
 
-    @Query("SELECT substr(date, 1, 7) AS month, SUM(amount) AS total, type " +
+    @Query("SELECT substr(date, 6, 2) AS month, SUM(amount) AS total " +
             "FROM transactions " +
-            "GROUP BY month, type " +
-            "ORDER BY month DESC")
-    List<MonthlyTotal> getAllMonthlyTotals();
-
-    @Query("SELECT substr(date, 1, 7) AS month, SUM(amount) AS total " +
-             "FROM transactions " +
-             "WHERE type = :type " +
-             "GROUP BY month " +
-             "ORDER BY month DESC LIMIT 6")
+            "WHERE type = :type " +
+            "GROUP BY month")
     List<MonthlyTotal> getMonthlyTotals(String type);
 
     @Query("SELECT SUM(amount) FROM transactions WHERE type = 'INCOME' AND substr(date, 1, 7) = :monthYear")
