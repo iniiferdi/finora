@@ -1,133 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#f5f5f5">
+    android:background="#FFFFFF">
 
-    <LinearLayout
+    <!-- ===== Scrollable Main Content ===== -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:padding="20dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavbar">
 
-        <!-- Header -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_statistik"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"
-            android:textColor="#333333" />
-
-        <!-- Card Pemasukan -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/card_background"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:gravity="center_horizontal">
 
-            <TextView
+            <!-- HEADER -->
+            <LinearLayout
+                android:id="@+id/headerBar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="4dp"
+                android:background="#FFFFFF"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:id="@+id/btnDetailBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back"
+                    android:background="@drawable/ripple_circle"
+                    app:tint="#000000" />
+
+                <TextView
+                    android:id="@+id/tvDetailTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Statistic"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:gravity="center" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:src="@android:color/transparent" />
+            </LinearLayout>
+
+
+            <!-- CARD Income + Expense -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/pemasukan_bulan_ini"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:gravity="center"
+                android:layout_marginBottom="22dp">
 
-            <TextView
-                android:id="@+id/tvIncome"
+                <!-- Income -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="120dp"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:background="@drawable/card_background"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Income"
+                        android:textSize="14sp"
+                        android:textColor="#555555"/>
+
+                    <TextView
+                        android:id="@+id/tvIncome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rp_0"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginTop="6dp"/>
+                </LinearLayout>
+
+                <!-- Expense -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="120dp"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:background="@drawable/card_background"
+                    android:layout_marginStart="16dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Expense"
+                        android:textSize="14sp"
+                        android:textColor="#555555"/>
+
+                    <TextView
+                        android:id="@+id/tvExpense"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rp_0"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginTop="6dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- BALANCE CARD -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rp_0"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#4CAF50" />
+                android:orientation="vertical"
+                android:padding="18dp"
+                android:background="@drawable/card_background"
+                android:layout_marginBottom="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_saldo"
+                    android:textColor="#555555"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tvBalance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rp_0"
+                    android:textStyle="bold"
+                    android:textSize="21sp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="6dp"/>
+            </LinearLayout>
+
+            <!-- CHART -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp"
+                android:background="@drawable/card_background"
+                android:layout_marginBottom="22dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Income vs Expense"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="#000000"
+                    android:layout_marginBottom="14dp"/>
+
+                <com.example.finora.ui.chart.FinoraStatsChartView
+                    android:id="@+id/finoraChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"/>
+            </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Card Pengeluaran -->
-        <LinearLayout
-            android:layout_width="match_parent"
+    </ScrollView>
+
+    <!-- NAVBAR -->
+    <LinearLayout
+        android:id="@+id/bottomNavbar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_background"
+            android:layout_weight="1"
             android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:src="@drawable/bill"
+            app:tint="#111111" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pengeluaran_bulan_ini"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/tvExpense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/rp_0"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#F44336" />
-
-        </LinearLayout>
-
-        <!-- Card Tabungan -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/navWallet"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_background"
+            android:layout_weight="1"
             android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:src="@drawable/wallet"
+            app:tint="#111111" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tabungan_bulan_ini"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+        <ImageView
+            android:id="@+id/navAdd"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="12dp"
+            android:src="@drawable/add"
+            app:tint="#111111" />
 
-            <TextView
-                android:id="@+id/tvSavings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/rp_0"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <!-- Card Saldo -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/navStats"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_background"
+            android:layout_weight="1"
             android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:src="@drawable/stats"
+            app:tint="#111111" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/total_saldo"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/tvBalance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/rp_0"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#2196F3" />
-
-        </LinearLayout>
-
+        <ImageView
+            android:id="@+id/navSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:src="@drawable/setting"
+            app:tint="#111111" />
     </LinearLayout>
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

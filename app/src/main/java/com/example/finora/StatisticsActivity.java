@@ -3,16 +3,25 @@ package com.example.finora;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.finora.data.AppDatabase;
+import com.example.finora.data.TransactionDao;
 import com.example.finora.data.StatisticsViewModel;
-import java.text.NumberFormat;
+import com.example.finora.ui.chart.FinoraStatsChartView;
+
+import java.time.LocalDate;
 import java.util.Locale;
 
 public class StatisticsActivity extends AppCompatActivity {
 
-    private TextView tvIncome, tvExpense, tvBalance, tvSavings;
+    private TextView tvIncome, tvExpense, tvBalance;
     private StatisticsViewModel viewModel;
+
+    private TransactionDao dao;
+    private FinoraStatsChartView chart;
+
+    private final int MONTH_COUNT = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,57 +33,61 @@ public class StatisticsActivity extends AppCompatActivity {
         tvIncome = findViewById(R.id.tvIncome);
         tvExpense = findViewById(R.id.tvExpense);
         tvBalance = findViewById(R.id.tvBalance);
-        tvSavings = findViewById(R.id.tvSavings);
 
-        // Observe data dari ViewModel
+
+        dao = AppDatabase.getInstance(this).transactionDao();
+        chart = findViewById(R.id.finoraChart);
+
         observeData();
+        loadChartData();
+    }
+
+    private void loadChartData() {
+        float[] incomeData = new float[MONTH_COUNT];
+        float[] expenseData = new float[MONTH_COUNT];
+
+        LocalDate now = LocalDate.now();
+
+        for (int i = MONTH_COUNT - 1; i >= 0; i--) {
+            LocalDate month = now.minusMonths(MONTH_COUNT - 1 - i);
+            String monthYear = month.toString().substring(0, 7); // YYYY-MM
+
+            Double monthlyIncome = dao.getMonthlyIncome(monthYear);
+            Double monthlyExpense = dao.getMonthlyExpense(monthYear);
+
+            incomeData[i] = monthlyIncome != null ? monthlyIncome.floatValue() : 0f;
+            expenseData[i] = monthlyExpense != null ? monthlyExpense.floatValue() : 0f;
+        }
+
+        chart.setData(incomeData, expenseData);
     }
 
     private void observeData() {
-        // Observe pemasukan bulan ini
         viewModel.getMonthlyIncome().observe(this, income -> {
-            tvIncome.setText(formatCurrency(income));
-            calculateSavings();
+            tvIncome.setText(formatRupiah(income));
         });
 
-        // Observe pengeluaran bulan ini
         viewModel.getMonthlyExpense().observe(this, expense -> {
-            tvExpense.setText(formatCurrency(expense));
-            calculateSavings();
+            tvExpense.setText(formatRupiah(expense));
         });
 
-        // Observe total saldo
         viewModel.getTotalBalance().observe(this, balance -> {
-            tvBalance.setText(formatCurrency(balance));
+            tvBalance.setText(formatRupiah(balance));
         });
     }
 
-    private void calculateSavings() {
-        Double income = viewModel.getMonthlyIncome().getValue();
-        Double expense = viewModel.getMonthlyExpense().getValue();
 
-        if (income != null && expense != null) {
-            double savings = income - expense;  // ganti Double jadi double
-            tvSavings.setText(formatCurrency(savings));
 
-            // Warna hijau untuk positif, merah untuk negatif
-            int color = savings >= 0 ?
-                    ContextCompat.getColor(this, android.R.color.holo_green_dark) :
-                    ContextCompat.getColor(this, android.R.color.holo_red_dark);
-            tvSavings.setTextColor(color);
-        }
+    private String formatRupiah(double value) {
+        int intValue = (int) value;
+        return String.format(Locale.US, "%,d", intValue).replace(",", ".");
     }
 
-    private String formatCurrency(Double amount) {
-        if (amount == null) amount = 0.0;
-        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-        return format.format(amount);
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh data ketika activity resume
         viewModel.refreshData();
+        loadChartData();
     }
 }

@@ -1,127 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:padding="20dp">
+    android:background="#FFFFFF">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <!-- SCROLL AREA -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="20dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- HEADER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingBottom="4dp">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/btnDetailBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_back"
-                android:background="@drawable/ripple_circle"
-                app:tint="#222"/>
+            <!-- HEADER -->
+            <LinearLayout
+                android:id="@+id/headerBar"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="8dp"
+                android:background="#FFFFFF">
 
-            <TextView
-                android:id="@+id/tvDetailTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Transaction Detail"
-                android:textColor="#222"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:gravity="center" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/btnDetailBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="#000000" />
 
+                <TextView
+                    android:id="@+id/tvDetailTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="History"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:gravity="center" />
 
-        <!-- CARD -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="28dp"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card_soft"
-            android:layout_marginTop="26dp">
-
-            <!-- ICON -->
-            <ImageView
-                android:id="@+id/iconType"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_income"
-                android:tint="#1C7C54"/>
-
-            <!-- AMOUNT -->
-            <TextView
-                android:id="@+id/tvDetailAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp 0"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                android:textColor="#222"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center" />
-
-            <!-- TYPE CHIP -->
-            <TextView
-                android:id="@+id/tvDetailType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="INCOME"
-                android:textSize="12sp"
-                android:textColor="#1C7C54"
-                android:background="@drawable/chip_soft"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center" />
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </LinearLayout>
 
 
-            <!-- DETAIL SECTION -->
+            <!-- TRANSACTION CARD -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="26dp">
+                android:padding="22dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/ig_card_white">
 
-                <!-- Item -->
+                <!-- AMOUNT -->
                 <TextView
-                    style="@style/Title"
+                    android:id="@+id/tvDetailAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:textColor="#555"
-                    android:layout_marginTop="6dp"/>
+                    android:text="Rp 0"
+                    android:textSize="36sp"
+                    android:textStyle="bold"
+                    android:textColor="#111111"
+                    android:layout_gravity="center" />
 
+                <!-- TYPE CHIP -->
                 <TextView
-                    android:id="@+id/tvDetailDate"
+                    android:id="@+id/tvDetailType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Value"
-                    android:textColor="#222"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="14dp"/>
+                    android:text="INCOME"
+                    android:textSize="12sp"
+                    android:textColor="#111111"
+                    android:background="@drawable/ig_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center" />
 
-                <!-- Divider -->
-                <View
+                <!-- DETAIL SECTION -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EAEAEA"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="22dp">
+
+                    <!-- DATE -->
+                    <TextView
+                        android:text="Date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#777777"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvDetailDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="–"
+                        android:textColor="#111111"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E5E5E5" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
+    </androidx.core.widget.NestedScrollView>
+
+
+    <!-- NAVBAR -->
+    <LinearLayout
+        android:id="@+id/bottomNavbar"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:src="@drawable/bill" />
+
+        <ImageView
+            android:id="@+id/navWallet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:src="@drawable/wallet" />
+
+        <ImageView
+            android:id="@+id/navAdd"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="12dp"
+            android:src="@drawable/add" />
+
+        <ImageView
+            android:id="@+id/navStats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:src="@drawable/stats" />
+
+        <ImageView
+            android:id="@+id/navSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:src="@drawable/setting" />
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@ import com.example.finora.data.TransactionEntity;
 public class TransactionDetailActivity extends AppCompatActivity {
 
     TextView tvTitle, tvAmount, tvDate, tvType;
-    ImageView btnBack, iconType;
+    ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,6 @@ public class TransactionDetailActivity extends AppCompatActivity {
         tvType = findViewById(R.id.tvDetailType);
 
         btnBack = findViewById(R.id.btnDetailBack);
-        iconType = findViewById(R.id.iconType);
 
         TransactionEntity t = AppDatabase.getInstance(this)
                 .transactionDao()
@@ -50,10 +49,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
         tvAmount.setText(formattedAmount);
 
-        if (t.type.equals("IN"))
-            iconType.setImageResource(R.drawable.ic_income);
-        else
-            iconType.setImageResource(R.drawable.ic_expense);
+
 
         btnBack.setOnClickListener(v -> finish());
     }
