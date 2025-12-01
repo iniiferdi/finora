@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finora.data.AppDatabase;
 import com.example.finora.data.BalanceDao;
 import com.example.finora.data.BalanceEntity;
-import com.example.finora.data.MonthlyTotal;
 import com.example.finora.data.TransactionDao;
 import com.example.finora.data.TransactionEntity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TransactionDao transactionDao;
     private TransactionAdapter adapter;
-    private WaveChartView waveChart;
 
     // ========================================================================
     // Utility
@@ -45,33 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
         transactionDao = AppDatabase.getInstance(this).transactionDao();
         ensureBalanceInitialized();
-
-        waveChart = findViewById(R.id.waveChart);
-
         initSearchOverlay();
         initTodayList();
 
-        findViewById(R.id.navSetting).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.navWallet).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, WalletActivity.class);
-            startActivity(intent);
-        });
-
-
-
         loadTodayTransactions();
         loadBalance();
-        loadChartData();
-
-        findViewById(R.id.navStats).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
-            startActivity(intent);
-        });
-
 
         findViewById(R.id.navAdd).setOnClickListener(v -> showAddModal());
         findViewById(R.id.navHome).setOnClickListener(v -> {
@@ -86,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadTodayTransactions();
         loadBalance();
-        loadChartData();
     }
 
     private void ensureBalanceInitialized() {
@@ -103,31 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tvTotalAmount = findViewById(R.id.tvTotalAmount);
         tvTotalAmount.setText("Rp " + formatRupiah(balance));
-    }
-
-    private void loadChartData() {
-        List<MonthlyTotal> totals = transactionDao.getMonthlyTotals("EXPENSE");
-
-        // Default flat line at bottom
-        float[] points = new float[]{0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f};
-
-        if (totals != null && !totals.isEmpty()) {
-            double max = 0;
-            for (MonthlyTotal mt : totals) {
-                if (mt.total > max) max = mt.total;
-            }
-
-            // Map up to 6 months of data
-            int count = Math.min(totals.size(), 6);
-            for (int i = 0; i < count; i++) {
-                double val = totals.get(i).total;
-                if (max > 0) {
-                    // 0.9f is bottom, 0.3f is top
-                    points[i] = (float) (0.9f - (val / max * 0.6f));
-                }
-            }
-        }
-        waveChart.setPoints(points);
     }
 
     private void initTodayList() {
@@ -155,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         Integer current = bDao.getBalance();
         if (current == null) current = 0;
 
-        if (old.type.equalsIgnoreCase("INCOME")) {
+        if (old.type.equalsIgnoreCase("IN")) {
             current -= old.amount;
         } else {
             current += old.amount;
@@ -166,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
         loadTodayTransactions();
         loadBalance();
-        loadChartData();
     }
 
     private void loadTodayTransactions() {
@@ -174,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
         List<TransactionEntity> data = transactionDao.getToday(today);
 
         adapter.setData(data);
+
+        if (data.isEmpty()) {
+            BalanceDao balanceDao = AppDatabase.getInstance(this).balanceDao();
+            balanceDao.updateBalance(0);
+            loadBalance();
+        }
     }
 
     private void initSearchOverlay() {
