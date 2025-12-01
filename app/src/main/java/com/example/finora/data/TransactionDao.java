@@ -36,6 +36,12 @@ public interface TransactionDao {
             "GROUP BY month")
     List<MonthlyTotal> getMonthlyTotals(String type);
 
+    @Query("SELECT substr(date, 1, 7) AS month, SUM(amount) AS total, type " +
+            "FROM transactions " +
+            "GROUP BY month, type " +
+            "ORDER BY month DESC")
+    List<MonthlyTotal> getAllMonthlyTotals();
+
     @Query("SELECT SUM(amount) FROM transactions WHERE type = 'INCOME' AND substr(date, 1, 7) = :monthYear")
     Double getMonthlyIncome(String monthYear);
 
