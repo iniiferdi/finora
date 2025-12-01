@@ -43,14 +43,14 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
         tvTitle.setText(t.title);
         tvDate.setText(t.date);
-        tvType.setText(t.type.equals("IN") ? "INCOME" : "EXPENSE");
+        tvType.setText(t.type.equalsIgnoreCase("INCOME") ? "INCOME" : "EXPENSE");
 
         String formattedAmount = "Rp " + String.format("%,d", t.amount)
                 .replace(",", ".");
 
         tvAmount.setText(formattedAmount);
 
-        if (t.type.equals("IN"))
+        if (t.type.equalsIgnoreCase("INCOME"))
             iconType.setImageResource(R.drawable.ic_income);
         else
             iconType.setImageResource(R.drawable.ic_expense);

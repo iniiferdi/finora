@@ -1,9 +1,13 @@
 package com.example.finora;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,17 +23,22 @@ import com.example.finora.data.TransactionEntity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private TransactionDao transactionDao;
     private TransactionAdapter adapter;
     private WaveChartView waveChart;
+    private LinearLayout monthLabelsContainer;
 
     // ========================================================================
     // Utility
@@ -47,13 +56,32 @@ public class MainActivity extends AppCompatActivity {
         ensureBalanceInitialized();
 
         waveChart = findViewById(R.id.waveChart);
+        monthLabelsContainer = findViewById(R.id.monthLabelsContainer);
 
         initSearchOverlay();
         initTodayList();
 
+        findViewById(R.id.navSetting).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.navWallet).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, WalletActivity.class);
+            startActivity(intent);
+        });
+
+
+
         loadTodayTransactions();
         loadBalance();
         loadChartData();
+
+        findViewById(R.id.navStats).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+            startActivity(intent);
+        });
+
 
         findViewById(R.id.navAdd).setOnClickListener(v -> showAddModal());
         findViewById(R.id.navHome).setOnClickListener(v -> {
@@ -88,28 +116,83 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadChartData() {
-        List<MonthlyTotal> totals = transactionDao.getMonthlyTotals("EXPENSE");
+        List<MonthlyTotal> allTotals = transactionDao.getAllMonthlyTotals();
 
-        // Default flat line at bottom
-        float[] points = new float[]{0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f};
+        Map<String, Double> incomeMap = new HashMap<>();
+        Map<String, Double> expenseMap = new HashMap<>();
 
-        if (totals != null && !totals.isEmpty()) {
-            double max = 0;
-            for (MonthlyTotal mt : totals) {
-                if (mt.total > max) max = mt.total;
-            }
-
-            // Map up to 6 months of data
-            int count = Math.min(totals.size(), 6);
-            for (int i = 0; i < count; i++) {
-                double val = totals.get(i).total;
-                if (max > 0) {
-                    // 0.9f is bottom, 0.3f is top
-                    points[i] = (float) (0.9f - (val / max * 0.6f));
+        if (allTotals != null) {
+            for (MonthlyTotal mt : allTotals) {
+                if ("INCOME".equalsIgnoreCase(mt.type)) {
+                    incomeMap.put(mt.month, mt.total);
+                } else if ("EXPENSE".equalsIgnoreCase(mt.type)) {
+                    expenseMap.put(mt.month, mt.total);
                 }
             }
         }
+
+        int numPoints = 6;
+        float[] points = new float[numPoints];
+        String[] displayMonths = new String[numPoints];
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -5);
+        SimpleDateFormat sdfKey = new SimpleDateFormat("yyyy-MM", Locale.US);
+        String[] shortMonths = new DateFormatSymbols(Locale.US).getShortMonths();
+
+        double maxAbs = 0;
+        double[] netValues = new double[numPoints];
+
+        Calendar tempCal = (Calendar) calendar.clone();
+        for (int i = 0; i < numPoints; i++) {
+            String key = sdfKey.format(tempCal.getTime());
+            double inc = incomeMap.getOrDefault(key, 0.0);
+            double exp = expenseMap.getOrDefault(key, 0.0);
+            double net = inc - exp;
+            netValues[i] = net;
+
+            if (Math.abs(net) > maxAbs) {
+                maxAbs = Math.abs(net);
+            }
+            tempCal.add(Calendar.MONTH, 1);
+        }
+
+        if (maxAbs == 0) maxAbs = 1;
+
+        for (int i = 0; i < numPoints; i++) {
+            points[i] = (float) (0.5f - (netValues[i] / maxAbs * 0.4f));
+            
+            int monthIndex = calendar.get(Calendar.MONTH);
+            displayMonths[i] = shortMonths[monthIndex];
+            calendar.add(Calendar.MONTH, 1);
+        }
+
         waveChart.setPoints(points);
+        updateMonthLabels(displayMonths);
+    }
+
+    private void updateMonthLabels(String[] months) {
+        monthLabelsContainer.removeAllViews();
+        if (months == null || months.length == 0) return;
+
+        for (int i = 0; i < months.length; i++) {
+            TextView tv = new TextView(this);
+            tv.setText(months[i]);
+            tv.setLayoutParams(new LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1.0f
+            ));
+            tv.setGravity(Gravity.CENTER);
+            tv.setTextColor(getResources().getColor(android.R.color.darker_gray));
+
+            if (i == months.length - 1) {
+                tv.setTypeface(null, Typeface.BOLD);
+                tv.setTextColor(getResources().getColor(android.R.color.black));
+            }
+
+            monthLabelsContainer.addView(tv);
+        }
     }
 
     private void initTodayList() {

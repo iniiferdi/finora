@@ -32,7 +32,7 @@ public class WaveChartView extends View {
 
         linePaint = new Paint();
         linePaint.setColor(Color.BLACK);
-        linePaint.setStrokeWidth(8f);
+        linePaint.setStrokeWidth(5f);
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setAntiAlias(true);
 
@@ -43,7 +43,7 @@ public class WaveChartView extends View {
 
         pointStrokePaint = new Paint();
         pointStrokePaint.setColor(Color.BLACK);
-        pointStrokePaint.setStrokeWidth(6f);
+        pointStrokePaint.setStrokeWidth(5f);
         pointStrokePaint.setStyle(Paint.Style.STROKE);
         pointStrokePaint.setAntiAlias(true);
 
@@ -68,20 +68,6 @@ public class WaveChartView extends View {
         float step = w / (points.length > 1 ? points.length - 1 : 1);
 
         Path path = new Path();
-        path.moveTo(0, h * (1 - points[0])); // Invert Y so 1.0 is top, 0.0 is bottom? No, original code used h * points[i]. 
-        // If points[i] is 0.65, it is 65% down the screen.
-        // Let's stick to original logic: y = h * points[i]
-        // But usually charts have 0 at bottom. 
-        // The original points were 0.65, 0.30, etc.
-        // If the chart expects normalized values 0..1 where 1 is max value.
-        // If the logic is y = h * point, then larger point value = lower on screen.
-        // Usually for a chart, we want larger value = higher on screen (smaller y).
-        // So we should probably do y = h - (h * point) or similar if point is 0..1 normalized value.
-        // However, looking at original code: `path.moveTo(0, h * points[0]);`
-        // It draws strictly based on the float value.
-        // I will assume the input `points` will be normalized such that they fit the drawing logic.
-        // For now, let's just keep the drawing logic identical but allow updating points.
-        
         path.moveTo(0, h * points[0]);
 
         for (int i = 0; i < points.length - 1; i++) {
@@ -106,7 +92,7 @@ public class WaveChartView extends View {
             float px = step * selectedIndex;
             float py = h * points[selectedIndex];
 
-            float radius = 22f;
+            float radius = 18f;
 
             canvas.drawCircle(px, py, radius, pointPaint);
             canvas.drawCircle(px, py, radius, pointStrokePaint);
