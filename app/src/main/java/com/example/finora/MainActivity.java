@@ -1,9 +1,13 @@
 package com.example.finora;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,17 +23,22 @@ import com.example.finora.data.TransactionEntity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private TransactionDao transactionDao;
     private TransactionAdapter adapter;
     private WaveChartView waveChart;
+    private LinearLayout monthLabelsContainer;
 
     // ========================================================================
     // Utility
@@ -47,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         ensureBalanceInitialized();
 
         waveChart = findViewById(R.id.waveChart);
+        monthLabelsContainer = findViewById(R.id.monthLabelsContainer);
 
         initSearchOverlay();
         initTodayList();
@@ -88,28 +98,109 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadChartData() {
-        List<MonthlyTotal> totals = transactionDao.getMonthlyTotals("EXPENSE");
+        // Get both INCOME and EXPENSE aggregates
+        List<MonthlyTotal> allTotals = transactionDao.getAllMonthlyTotals();
 
-        // Default flat line at bottom
-        float[] points = new float[]{0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f};
+        // Map: "YYYY-MM" -> { Income, Expense }
+        // Or better: calculate net movement.
+        // Strategy:
+        // 1. Calculate net = Income - Expense for each month.
+        // 2. Find absolute max value (either max positive income or max negative outcome) to scale the chart.
+        // 3. Center = 0.5f (middle).
+        //    Positive net -> goes up (0.5 -> 0.2).
+        //    Negative net -> goes down (0.5 -> 0.8).
+        //    Zero -> 0.5.
 
-        if (totals != null && !totals.isEmpty()) {
-            double max = 0;
-            for (MonthlyTotal mt : totals) {
-                if (mt.total > max) max = mt.total;
-            }
+        Map<String, Double> incomeMap = new HashMap<>();
+        Map<String, Double> expenseMap = new HashMap<>();
 
-            // Map up to 6 months of data
-            int count = Math.min(totals.size(), 6);
-            for (int i = 0; i < count; i++) {
-                double val = totals.get(i).total;
-                if (max > 0) {
-                    // 0.9f is bottom, 0.3f is top
-                    points[i] = (float) (0.9f - (val / max * 0.6f));
+        if (allTotals != null) {
+            for (MonthlyTotal mt : allTotals) {
+                if ("INCOME".equalsIgnoreCase(mt.type)) {
+                    incomeMap.put(mt.month, mt.total);
+                } else if ("EXPENSE".equalsIgnoreCase(mt.type)) {
+                    expenseMap.put(mt.month, mt.total);
                 }
             }
         }
+
+        int numPoints = 6;
+        float[] points = new float[numPoints];
+        String[] displayMonths = new String[numPoints];
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -5);
+        SimpleDateFormat sdfKey = new SimpleDateFormat("yyyy-MM", Locale.US);
+        String[] shortMonths = new DateFormatSymbols(Locale.US).getShortMonths();
+
+        // First pass: Calculate net values and find max absolute value
+        double maxAbs = 0;
+        double[] netValues = new double[numPoints];
+
+        Calendar tempCal = (Calendar) calendar.clone();
+        for (int i = 0; i < numPoints; i++) {
+            String key = sdfKey.format(tempCal.getTime());
+            double inc = incomeMap.getOrDefault(key, 0.0);
+            double exp = expenseMap.getOrDefault(key, 0.0);
+            double net = inc - exp;
+            netValues[i] = net;
+
+            if (Math.abs(net) > maxAbs) {
+                maxAbs = Math.abs(net);
+            }
+            tempCal.add(Calendar.MONTH, 1);
+        }
+
+        // Avoid division by zero
+        if (maxAbs == 0) maxAbs = 1;
+
+        // Second pass: normalize to 0..1 range
+        // Center = 0.5
+        // Max Positive = 0.2 (Top)
+        // Max Negative = 0.8 (Bottom)
+        // Range from center is +/- 0.3
+        
+        // Formula: y = 0.5 - (net / maxAbs) * 0.3
+        // If net = maxAbs (positive) -> 0.5 - 0.3 = 0.2 (High)
+        // If net = -maxAbs (negative) -> 0.5 - (-1)*0.3 = 0.8 (Low)
+        // If net = 0 -> 0.5 (Center)
+
+        for (int i = 0; i < numPoints; i++) {
+            points[i] = (float) (0.5f - (netValues[i] / maxAbs * 0.3f));
+            
+            // Fill labels
+            int monthIndex = calendar.get(Calendar.MONTH);
+            displayMonths[i] = shortMonths[monthIndex];
+            calendar.add(Calendar.MONTH, 1);
+        }
+
         waveChart.setPoints(points);
+        updateMonthLabels(displayMonths);
+    }
+
+    private void updateMonthLabels(String[] months) {
+        monthLabelsContainer.removeAllViews();
+        if (months == null || months.length == 0) return;
+
+        for (int i = 0; i < months.length; i++) {
+            TextView tv = new TextView(this);
+            tv.setText(months[i]);
+            tv.setLayoutParams(new LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1.0f
+            ));
+            tv.setGravity(Gravity.CENTER);
+            tv.setTextColor(getResources().getColor(android.R.color.darker_gray));
+
+            // Highlight the last one (current month)
+            if (i == months.length - 1) {
+                tv.setTypeface(null, Typeface.BOLD);
+                tv.setTextColor(getResources().getColor(android.R.color.black));
+            }
+
+            monthLabelsContainer.addView(tv);
+        }
     }
 
     private void initTodayList() {

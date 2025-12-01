@@ -141,18 +141,12 @@
                     android:layout_height="180dp" />
 
                 <LinearLayout
+                    android:id="@+id/monthLabelsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:weightSum="6">
-
-                    <TextView android:text="Jul"  style="@style/monthLabel"/>
-                    <TextView android:text="Aug"  style="@style/monthLabel"/>
-                    <TextView android:text="Sep"  style="@style/monthLabel"/>
-                    <TextView android:text="Oct"  style="@style/monthLabelBold"/>
-                    <TextView android:text="Nov"  style="@style/monthLabel"/>
-                    <TextView android:text="Dec"  style="@style/monthLabel"/>
                 </LinearLayout>
             </LinearLayout>
 
