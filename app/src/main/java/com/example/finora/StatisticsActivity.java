@@ -1,5 +1,6 @@
 package com.example.finora;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +41,32 @@ public class StatisticsActivity extends AppCompatActivity {
 
         observeData();
         loadChartData();
+        initNavbar();
+
+        findViewById(R.id.btnDetailBack).setOnClickListener(v -> {
+            finish();
+        });
+    }
+
+    private void initNavbar() {
+
+        findViewById(R.id.navHome).setOnClickListener(v -> {
+            startActivity(new Intent(StatisticsActivity.this, HistoryActivity.class));
+        });
+
+        findViewById(R.id.navWallet).setOnClickListener(v -> {
+        });
+
+        findViewById(R.id.navDash).setOnClickListener(v -> {
+            startActivity(new Intent(StatisticsActivity.this, MainActivity.class));
+        });
+
+        findViewById(R.id.navStats).setOnClickListener(v -> {
+        });
+
+        findViewById(R.id.navSetting).setOnClickListener(v -> {
+            startActivity(new Intent(StatisticsActivity.this, SettingsActivity.class));
+        });
     }
 
     private void loadChartData() {

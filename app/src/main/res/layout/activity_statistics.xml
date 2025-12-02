@@ -210,12 +210,11 @@
             app:tint="#111111" />
 
         <ImageView
-            android:id="@+id/navAdd"
+            android:id="@+id/navDash"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:padding="12dp"
-            android:src="@drawable/add"
-            app:tint="#111111" />
+            android:src="@drawable/dash" />
 
         <ImageView
             android:id="@+id/navStats"

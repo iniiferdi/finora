@@ -1,5 +1,6 @@
 package com.example.finora;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.ImageView;
@@ -41,6 +42,11 @@ public class TransactionDetailActivity extends AppCompatActivity {
             return;
         }
 
+        initNavbar();
+
+
+
+
         tvTitle.setText(t.title);
         tvDate.setText(t.date);
         tvType.setText(t.type.equalsIgnoreCase("INCOME") ? "INCOME" : "EXPENSE");
@@ -56,5 +62,28 @@ public class TransactionDetailActivity extends AppCompatActivity {
             iconType.setImageResource(R.drawable.ic_expense);
 
         btnBack.setOnClickListener(v -> finish());
+    }
+
+    private void initNavbar() {
+
+        findViewById(R.id.navHome).setOnClickListener(v -> {
+            startActivity(new Intent(TransactionDetailActivity.this, HistoryActivity.class));
+        });
+
+        findViewById(R.id.navWallet).setOnClickListener(v -> {
+            startActivity(new Intent(TransactionDetailActivity.this, WalletActivity.class));
+        });
+
+        findViewById(R.id.navDash).setOnClickListener(v -> {
+            startActivity(new Intent(TransactionDetailActivity.this, MainActivity.class));
+        });
+
+        findViewById(R.id.navStats).setOnClickListener(v -> {
+            startActivity(new Intent(TransactionDetailActivity.this, StatisticsActivity.class));
+        });
+
+        findViewById(R.id.navSetting).setOnClickListener(v -> {
+            startActivity(new Intent(TransactionDetailActivity.this, SettingsActivity.class));
+        });
     }
 }
